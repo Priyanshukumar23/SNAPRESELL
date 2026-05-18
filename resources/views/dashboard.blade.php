@@ -122,9 +122,9 @@
             <span>Messages</span>
         </div>
 
-        <div class="sidebar-item" onclick="switchTab('profile', this)">
-            <i class="ph ph-user"></i>
-            <span>Account</span>
+        <div class="sidebar-item" onclick="switchTab('about', this)">
+            <i class="ph ph-info"></i>
+            <span>About</span>
         </div>
 
         <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
@@ -356,6 +356,10 @@
                                 @endif
                                 @if(now()->diffInDays($order->created_at) <= 7 && !in_array(strtolower($order->status), ['cancelled', 'returned', 'return requested', 'return accepted', 'return declined']))
                                     <button type="button" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem; color: #ef4444; border-color: #ef4444;" onclick="requestReturn({{ $order->id }})"><i class="ph ph-arrow-u-up-left"></i> Return</button>
+                                    <form id="cancel-form-{{ $order->id }}" action="{{ route('order.cancel', $order->id) }}" method="POST" style="display: none;">
+                                        @csrf
+                                        <input type="hidden" name="return_reason" id="return-reason-{{ $order->id }}">
+                                    </form>
                                 @endif
                             </div>
                         </div>
@@ -399,6 +403,67 @@
         <div id="messages" class="tab-content">
             <h3>Recent Messages</h3>
             <div class="glass mt-2">
+                @forelse($messages as $msg)
+                    <div style="border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; margin-bottom: 1rem;">
+                        <div class="flex justify-between">
+                            <strong>{{ $msg->sender->name }}</strong>
+                            <small class="text-muted">{{ $msg->created_at->diffForHumans() }}</small>
+                        </div>
+                        <p style="margin: 0.5rem 0;">{{ $msg->message }}</p>
+                        <a href="{{ route('messages', $msg->sender_id) }}" class="text-primary" style="font-size: 0.875rem;">Reply</a>
+                    </div>
+                @empty
+                    <div class="text-center text-muted" style="padding: 2rem;">No recent messages.</div>
+                @endforelse
+                
+                <div class="text-center mt-4">
+                    <a href="{{ route('messages') }}" class="btn btn-primary" style="display: inline-block;">View All Messages</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT TAB -->
+        <div id="about" class="tab-content">
+            <div class="header-card">
+                <h2 style="margin: 0;">About SnapResell 🚀</h2>
+                <p class="text-muted" style="margin: 0.5rem 0 0 0;">Your ultimate peer-to-peer marketplace platform.</p>
+            </div>
+            
+            <div class="glass mt-2" style="padding: 2rem;">
+                <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; text-align: center;">SnapResell is designed to provide a seamless buying and selling experience. Whether you're clearing out your closet as a seller or hunting for the best deals as a buyer, we've got you covered.</p>
+                
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div style="background: rgba(99, 102, 241, 0.05); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(99, 102, 241, 0.2);">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <i class="ph-fill ph-shopping-cart" style="font-size: 2rem; color: var(--primary-indigo);"></i>
+                            <h3 style="margin: 0;">For Buyers</h3>
+                        </div>
+                        <ul style="list-style-type: disc; padding-left: 1.5rem; color: var(--color-text); opacity: 0.9; line-height: 1.8;">
+                            <li><strong>Super Coins:</strong> Earn 5% back in Super Coins on every purchase to use later.</li>
+                            <li><strong>Order Tracking:</strong> Track your orders in real-time from the "My Orders" tab.</li>
+                            <li><strong>Direct Chat:</strong> Message sellers directly to ask questions about products.</li>
+                            <li><strong>Easy Returns:</strong> Request returns within 7 days hassle-free.</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: rgba(236, 72, 153, 0.05); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(236, 72, 153, 0.2);">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <i class="ph-fill ph-storefront" style="font-size: 2rem; color: var(--primary-pink);"></i>
+                            <h3 style="margin: 0;">For Sellers</h3>
+                        </div>
+                        <ul style="list-style-type: disc; padding-left: 1.5rem; color: var(--color-text); opacity: 0.9; line-height: 1.8;">
+                            <li><strong>Trust Points:</strong> Earn 10 Trust Points for every successful order. Higher points mean more buyer trust!</li>
+                            <li><strong>Manage Listings:</strong> Add, edit, and track your active product listings easily.</li>
+                            <li><strong>Handle Returns:</strong> Accept or decline return requests directly from your dashboard.</li>
+                            <li><strong>Instant Communication:</strong> Chat with potential buyers to close deals faster.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Custom Reason Modal -->
 <div id="reasonModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
     <div class="glass" style="width: 100%; max-width: 400px; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">

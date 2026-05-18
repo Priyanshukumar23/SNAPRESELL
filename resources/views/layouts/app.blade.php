@@ -45,6 +45,16 @@
             </div>
         @endif
 
+        @if($errors->any())
+            <div class="glass animate-fade-in" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #ef4444; padding: 1rem; margin-bottom: 1.5rem;">
+                <ul style="margin: 0; padding-left: 1.5rem;">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         @yield('content')
     </div>
 

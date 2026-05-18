@@ -85,7 +85,7 @@ class MarketplaceController extends Controller
 
         CartItem::updateOrCreate(
             ['user_id' => Auth::id(), 'product_id' => $request->product_id],
-            ['quantity' => \DB::raw('quantity + 1')]
+            ['quantity' => $currentQuantity + 1]
         );
 
         if ($request->has('checkout')) {
