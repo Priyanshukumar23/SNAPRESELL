@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+<!-- Blade Template Inheritance -->
 @section('content')
 <div class="animate-fade-in" style="max-width: 400px; margin: 4rem auto;">
     <div class="glass">

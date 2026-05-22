@@ -93,12 +93,12 @@ nav.navbar {
     align-items: center;
 }
 
-.nav-links a {
+.nav-links a:not(.btn) {
     color: var(--text-main);
     font-weight: 500;
 }
 
-.nav-links a:hover {
+.nav-links a:not(.btn):hover {
     color: var(--primary-indigo);
 }
 
